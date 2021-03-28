@@ -1,5 +1,6 @@
 import tkinter as tk
 import datetime as dt
+import sys
 
 class App():
     def __init__(self, length: int):
@@ -7,7 +8,7 @@ class App():
         self.root.geometry('480x360')
         self.message = tk.Label(text = 'Currently on a Pomodoro')
         self.label = tk.Label(text = '')
-        self.pomodoros = tk.Label(text = 'Pomodoros: ')
+        self.pomodoros = tk.Label(text = 'Pomodoros: 0')
         self.pomodoro_count = 0
 
         self.reset_button = tk.Button(text = 'Reset', command = self.reset_clock)
@@ -26,7 +27,7 @@ class App():
         self.pomodoros.pack()
 
         self.is_break = False
-        self.is_running = True
+        self.is_running = False
 
         self.update_clock()
         self.root.mainloop()
@@ -37,9 +38,12 @@ class App():
             self.time_left = dt.timedelta(minutes = 5)
             self.message.config(text = 'Currently on a break')
             self.pomodoro_count += 1
-        elif self.is_break and self.time_left == dt.timedelta(seconds = 0) :
+            self.pomodoros.config(text = f'Pomodoros: {self.pomodoro_count}')
+            self.beep()
+            
+        elif self.is_break and self.time_left == dt.timedelta(seconds = 0):
             self.is_break = False
-            self.time_left = dt.timedelta(minutes = self.length)
+            self.time_left = self.length
             self.message.config(text = 'Currently on a Pomodoro')
 
         if self.is_running:
@@ -63,5 +67,8 @@ class App():
         time_left_string = str(time_to_set).split('.')[0]
         self.label.config(text = time_left_string)
 
+    def beep(self):
+        print("\a")
 
-pomodoro = App(10)
+
+pomodoro = App(25)
